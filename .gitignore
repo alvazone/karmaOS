@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+out/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python (for apps/ai later)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Turbo
+.turbo/
+
+# OS / editor
+.DS_Store
+*.log
+
+# TypeScript
+*.tsbuildinfo
