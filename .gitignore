@@ -18,6 +18,9 @@ __pycache__/
 .venv/
 venv/
 
+# Prisma generated client
+packages/db/generated/
+
 # Turbo
 .turbo/
 
