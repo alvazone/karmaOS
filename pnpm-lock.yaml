@@ -211,6 +211,8 @@ importers:
         specifier: ^2.9.18
         version: 2.9.18
 
+  apps/ai: {}
+
   apps/api:
     dependencies:
       express:
