@@ -6,8 +6,61 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum CalendarType {
+  native
+  google
+  apple
+  outlook
+}
+
+model User {
+  id                              String          @id @default(uuid()) @db.Uuid
+  name                            String          @db.VarChar(100)
+  email                           String          @unique @db.VarChar(255)
+  passwordHash                    String          @map("password_hash") @db.VarChar(255)
+  timezone                        String          @db.VarChar(50)
+  onboardingComplete              Boolean         @default(false) @map("onboarding_complete")
+  onboardingState                 Json?           @map("onboarding_state") @db.JsonB
+  onboardingConversationHistory   Json?           @map("onboarding_conversation_history") @db.JsonB
+  createdAt                       DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                       DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt                       DateTime?       @map("deleted_at") @db.Timestamptz
+  calendars                       Calendar[]
+  refreshTokens                   RefreshToken[]
+
+  @@map("users")
+}
+
+model Calendar {
+  id                  String                  @id @default(uuid()) @db.Uuid
+  userId              String                  @map("user_id") @db.Uuid
+  user                User                    @relation(fields: [userId], references: [id])
+  name                String                  @db.VarChar(100)
+  type                CalendarType            @default(native)
+  color               String?                 @db.VarChar(7)
+  isActive            Boolean                 @default(true) @map("is_active")
+  createdAt           DateTime                @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime                @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt           DateTime?               @map("deleted_at") @db.Timestamptz
+
+  @@map("calendars")
+}
+
+model RefreshToken {
+  id                  String                  @id @default(uuid()) @db.Uuid
+  userId              String                  @map("user_id") @db.Uuid
+  user                User                    @relation(fields: [userId], references: [id])
+  tokenHash           String                  @unique @map("token_hash") @db.VarChar(255)
+  expiresAt           DateTime                @map("expires_at") @db.Timestamptz
+  revokedAt           DateTime?               @map("revoked_at") @db.Timestamptz
+  createdAt           DateTime                @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("refresh_tokens")
 }
